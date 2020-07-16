@@ -47,7 +47,7 @@ This is the mobile of GoBarber, where a user can make appointments that will be 
 - Open your terminal to write theses lines:
 ```bash
   ## clone repository
-  $ git clone https://github.com/danilobandeira29/mobile-gobarber
+  $ git clone https://github.com/danilobandeira29/mobile-gobarber.git
 
   ## access project directory
   $ cd mobile-gobarber
@@ -104,7 +104,7 @@ Mobile do GoBarber, onde um usuário pode marcar compromissos que serão atendid
 - Abra o seu terminal para escrever essas linhas:
 ```bash
   ## clonar repositório
-  $ git clone https://github.com/danilobandeira29/mobile-gobarber
+  $ git clone https://github.com/danilobandeira29/mobile-gobarber.git
 
   ## acessar o diretório do projeto
   $ cd mobile-gobarber
