@@ -11,6 +11,7 @@
 - [Challenges](#-Challenges)
 - [Techs](#-Techs)
 - [Code formatters](#-Code-formatters)
+- [Required programs](#-Required-programs)
 - [Clone the repository](#-Clone-the-repository)
 
 
@@ -31,7 +32,7 @@ This is the mobile of GoBarber, where a user can make appointments that will be 
 - API REST/Restful
 - Typescript
 - Styled-components
-- Async Storage
+- AsyncStorage
 - Unform
 - Yup
 - Axios
@@ -42,6 +43,13 @@ This is the mobile of GoBarber, where a user can make appointments that will be 
 - EditorConfig
 
 ---
+
+## 🛑 Required programs
+- [Android](https://developer.android.com/studio)/[iOS](https://developer.apple.com/xcode/) Emulator
+> Only one of theses is required
+### How to set up the Emulator
+- [This documentation will help you to set up the emulator to each plataform.](https://react-native.rocketseat.dev/)
+
 
 ## 👇 Clone the repository
 - Open your terminal to write theses lines:
@@ -55,6 +63,16 @@ This is the mobile of GoBarber, where a user can make appointments that will be 
   ## install all dependencies (or you can use 'npm install')
   $ yarn
 
+  ## will depend on the emulator of the plataform you're using
+
+  ## make sure the emulator is running
+
+  ## for the android execute
+  $ yarn android
+
+  ## for the ios execute
+  $ yarn ios
+
   ## inicialize the project (or you can use 'npm start')
   $ yarn start
 ```
@@ -67,6 +85,7 @@ This is the mobile of GoBarber, where a user can make appointments that will be 
 - [Desafios](#-Desafios)
 - [Tecnologias](#-Tecnologias)
 - [Formatadores de Código](#-Formatadores-de-Código)
+- [Programas necessários](#-Programas-necessários)
 - [Clonar o Projeto](#-Clonar-o-Projeto)
 
 
@@ -88,7 +107,7 @@ Mobile do GoBarber, onde um usuário pode marcar compromissos que serão atendid
 - API REST/Restful
 - Typescript
 - Styled-components
-- Async Storage
+- AsyncStorage
 - Unform
 - Yup
 - Axios
@@ -99,6 +118,12 @@ Mobile do GoBarber, onde um usuário pode marcar compromissos que serão atendid
 - EditorConfig
 
 ---
+
+## 🛑 Programas necessários
+- Emulador [Android](https://developer.android.com/studio)/[iOS](https://developer.apple.com/xcode/)
+> Apenas um desses é necessário
+### Como configurar o emulador
+- [Nessa documentação você encontrar o que precisa para configurar o seu emulador para cada plataforma.](https://react-native.rocketseat.dev/)
 
 ## 👇 Clonar o Projeto
 - Abra o seu terminal para escrever essas linhas:
@@ -112,11 +137,21 @@ Mobile do GoBarber, onde um usuário pode marcar compromissos que serão atendid
   ## instalar todas as dependências (ou você pode executar 'npm install')
   $ yarn
 
-  ## inicializar o projeto (ou você pode executar 'npm start')
+  ## irá depender do emulador da plataforma que você está utilizando
+
+  ## tenha certeza que seu emulador está executando
+
+  ## caso seja android, execute:
+  $ yarn android
+
+  ## caso seja ios, execute:
+  $ yarn ios
+
+  ## inicialize the project (or you can use 'npm start')
   $ yarn start
 ```
 ---
 ---
 
-**Developed by/Desenvolvido por**👻
+**Developed by/Desenvolvido por**💜
 <a href="https://www.linkedin.com/in/danilo-bandeira-4411851a4/">**Danilo Bandeira</a>**
