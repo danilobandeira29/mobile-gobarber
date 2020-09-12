@@ -12,6 +12,7 @@ import {
   BackButton,
   HeaderTitle,
   UserAvatar,
+  Content,
   ProvidersListContainer,
   ProvidersList,
   ProviderContainer,
@@ -21,6 +22,12 @@ import {
   Title,
   OpenDatePickerButton,
   OpenDatePickerButtonText,
+  Schedule,
+  Section,
+  SectionTitle,
+  SectionContent,
+  Hour,
+  HourText,
 } from './styles';
 
 interface RouteParams {
@@ -56,6 +63,8 @@ const CreateAppointment: React.FC = () => {
     ProviderDayAvailabilityItem[]
   >([]);
 
+  const [selectedHour, setSelectedHour] = useState(0);
+
   useEffect(() => {
     api.get('/providers').then(response => {
       setProviders(response.data);
@@ -76,6 +85,7 @@ const CreateAppointment: React.FC = () => {
 
   const handleSelectProvider = useCallback((providerId: string) => {
     setSelectedProvider(providerId);
+    setSelectedHour(0);
   }, []);
 
   const handleToggleDatePicker = useCallback(() => {
@@ -91,6 +101,7 @@ const CreateAppointment: React.FC = () => {
       if (date) {
         setSelectedDate(date);
       }
+      setSelectedHour(0);
     },
     [],
   );
@@ -99,13 +110,17 @@ const CreateAppointment: React.FC = () => {
     goBack();
   }, [goBack]);
 
+  const handleSelectHour = useCallback((hour: number) => {
+    setSelectedHour(hour);
+  }, []);
+
   const morningAvailability = useMemo(() => {
     return providerDayAvailability
       .filter(({ hour }) => hour < 12)
       .map(({ hour, available }) => ({
         hour,
         available,
-        hourFormatted: format(new Date().setHours(hour, 0), 'HH:mm'),
+        hourFormatted: format(new Date().setHours(hour), 'HH:00'),
       }));
   }, [providerDayAvailability]);
 
@@ -129,49 +144,86 @@ const CreateAppointment: React.FC = () => {
         <UserAvatar source={{ uri: user.avatar_url }} />
       </Header>
 
-      <ProvidersListContainer>
-        <ProvidersList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={providers}
-          keyExtractor={provider => provider.id}
-          renderItem={({ item: provider }) => (
-            <ProviderContainer
-              onPress={() => handleSelectProvider(provider.id)}
-              selected={provider.id === selectedProvider}
-            >
-              <ProviderAvatar source={{ uri: provider.avatar_url }} />
-              <ProviderName selected={provider.id === selectedProvider}>
-                {provider.name}
-              </ProviderName>
-            </ProviderContainer>
-          )}
-        />
-      </ProvidersListContainer>
-      <Calendar>
-        <Title>Escolha uma data</Title>
-        <OpenDatePickerButton onPress={handleToggleDatePicker}>
-          <OpenDatePickerButtonText>
-            Selecionar outra data
-          </OpenDatePickerButtonText>
-        </OpenDatePickerButton>
-        {showDatePicker && (
-          <DayTimePicker
-            onChange={handleChangeDate}
-            value={selectedDate}
-            mode="date"
-            display="calendar"
+      <Content>
+        <ProvidersListContainer>
+          <ProvidersList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={providers}
+            keyExtractor={provider => provider.id}
+            renderItem={({ item: provider }) => (
+              <ProviderContainer
+                onPress={() => handleSelectProvider(provider.id)}
+                selected={provider.id === selectedProvider}
+              >
+                <ProviderAvatar source={{ uri: provider.avatar_url }} />
+                <ProviderName selected={provider.id === selectedProvider}>
+                  {provider.name}
+                </ProviderName>
+              </ProviderContainer>
+            )}
           />
-        )}
-      </Calendar>
+        </ProvidersListContainer>
+        <Calendar>
+          <Title>Escolha uma data</Title>
+          <OpenDatePickerButton onPress={handleToggleDatePicker}>
+            <OpenDatePickerButtonText>
+              Selecionar outra data
+            </OpenDatePickerButtonText>
+          </OpenDatePickerButton>
+          {showDatePicker && (
+            <DayTimePicker
+              onChange={handleChangeDate}
+              value={selectedDate}
+              mode="date"
+              display="calendar"
+            />
+          )}
+        </Calendar>
 
-      {morningAvailability.map(({ hourFormatted }) => (
-        <Title key={hourFormatted}>{hourFormatted}</Title>
-      ))}
+        <Schedule>
+          <Title>Escolha o horário</Title>
+          <Section>
+            <SectionTitle>Manhã</SectionTitle>
+            <SectionContent>
+              {morningAvailability.map(({ hourFormatted, available, hour }) => (
+                <Hour
+                  enabled={available}
+                  key={hourFormatted}
+                  selected={hour === selectedHour}
+                  onPress={() => handleSelectHour(hour)}
+                  available={available}
+                >
+                  <HourText selected={hour === selectedHour}>
+                    {hourFormatted}
+                  </HourText>
+                </Hour>
+              ))}
+            </SectionContent>
+          </Section>
 
-      {afternoonAvailability.map(({ hourFormatted }) => (
-        <Title key={hourFormatted}>{hourFormatted}</Title>
-      ))}
+          <Section>
+            <SectionTitle>Tarde</SectionTitle>
+            <SectionContent>
+              {afternoonAvailability.map(
+                ({ hourFormatted, available, hour }) => (
+                  <Hour
+                    enabled={available}
+                    key={hourFormatted}
+                    selected={hour === selectedHour}
+                    onPress={() => handleSelectHour(hour)}
+                    available={available}
+                  >
+                    <HourText selected={hour === selectedHour}>
+                      {hourFormatted}
+                    </HourText>
+                  </Hour>
+                ),
+              )}
+            </SectionContent>
+          </Section>
+        </Schedule>
+      </Content>
     </Container>
   );
 };
