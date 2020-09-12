@@ -17,6 +17,8 @@ export const Header = styled.View`
   align-items: center;
 `;
 
+Header.displayName = 'DashboardHeader';
+
 export const HeaderTitle = styled.Text`
   font-family: 'RobotoSlab-Regular';
   color: #f4ede8;

@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Platform } from 'react-native';
 import DayTimePicker from '@react-native-community/datetimepicker';
+import { format } from 'date-fns';
 import Icon from 'react-native-vector-icons/Feather';
 import api from '../../services/api';
 import { useAuth } from '../../hooks/auth';
@@ -98,6 +99,26 @@ const CreateAppointment: React.FC = () => {
     goBack();
   }, [goBack]);
 
+  const morningAvailability = useMemo(() => {
+    return providerDayAvailability
+      .filter(({ hour }) => hour < 12)
+      .map(({ hour, available }) => ({
+        hour,
+        available,
+        hourFormatted: format(new Date().setHours(hour, 0), 'HH:mm'),
+      }));
+  }, [providerDayAvailability]);
+
+  const afternoonAvailability = useMemo(() => {
+    return providerDayAvailability
+      .filter(({ hour }) => hour >= 12)
+      .map(({ hour, available }) => ({
+        hour,
+        available,
+        hourFormatted: format(new Date().setHours(hour), 'HH:00'),
+      }));
+  }, [providerDayAvailability]);
+
   return (
     <Container>
       <Header>
@@ -143,6 +164,14 @@ const CreateAppointment: React.FC = () => {
           />
         )}
       </Calendar>
+
+      {morningAvailability.map(({ hourFormatted }) => (
+        <Title key={hourFormatted}>{hourFormatted}</Title>
+      ))}
+
+      {afternoonAvailability.map(({ hourFormatted }) => (
+        <Title key={hourFormatted}>{hourFormatted}</Title>
+      ))}
     </Container>
   );
 };
