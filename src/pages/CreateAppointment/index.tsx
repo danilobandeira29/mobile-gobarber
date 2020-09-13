@@ -104,7 +104,11 @@ const CreateAppointment: React.FC = () => {
         date,
       });
 
-      navigate('AppointmentCreated', { date: date.getTime() });
+      date.setHours(selectedHour);
+
+      navigate('AppointmentCreated', {
+        date: date.getTime(),
+      });
     } catch (err) {
       Alert.alert(
         'Erro ao criar agendamento',
