@@ -21,22 +21,24 @@ import {
   Container,
   Header,
   HeaderTitle,
-  ReturnButton,
-  LogoutButton,
+  GoBackButton,
+  SignOutButton,
   Content,
   ProfileContent,
   UserAvatar,
   ChangeAvatarButton,
 } from './styles';
 
-interface SignUpFormData {
+interface ProfileFormData {
   name: string;
   email: string;
   password: string;
+  old_password: string;
+  password_confirmation: string;
 }
 
 const Profile: React.FC = () => {
-  const { user } = useAuth();
+  const { user, signOut, updateUser } = useAuth();
 
   const emailInputRef = useRef<TextInput>(null);
   const oldPasswordInputRef = useRef<TextInput>(null);
@@ -45,8 +47,8 @@ const Profile: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
 
-  const handleSignUp = useCallback(
-    async (data: SignUpFormData) => {
+  const handleUpdateProfile = useCallback(
+    async (data: ProfileFormData) => {
       try {
         formRef.current?.setErrors({});
         const schema = Yup.object().shape({
@@ -55,40 +57,57 @@ const Profile: React.FC = () => {
             .required('Email obrigatório')
             .email('Digite um E-mail válido'),
           old_password: Yup.string(),
-          password: Yup.string().when('Nova senha necessária', {
-            is: true,
-            then: Yup.string().required('Nova senha obrigatória'),
+          password: Yup.string().when('old_password', {
+            is: val => !!val.length,
+            then: Yup.string().required('Campo obrigatório'),
             otherwise: Yup.string(),
           }),
-          password_confirmation: Yup.string().oneOf([
-            Yup.ref('password'),
-            'Confirmação errada',
-          ]),
+          password_confirmation: Yup.string()
+            .when('old_password', {
+              is: val => !!val.length,
+              then: Yup.string().required('Campo obrigatório'),
+              otherwise: Yup.string(),
+            })
+            .oneOf([Yup.ref('password')], 'Confirmação obrigátoria'),
         });
 
         await schema.validate(data, { abortEarly: false });
 
-        await api.post('/users', data);
+        const {
+          email,
+          name,
+          password,
+          old_password,
+          password_confirmation,
+        } = data;
 
-        Alert.alert(
-          'Cadastro realizado com sucesso!',
-          'Você já pode fazer login na aplicação.',
-        );
+        const formData = {
+          email,
+          name,
+          ...(old_password
+            ? { password, old_password, password_confirmation }
+            : {}),
+        };
+
+        const response = await api.put('/profile', formData);
+
+        await updateUser(response.data);
+
+        Alert.alert('Perfil alterado!');
 
         navigation.goBack();
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
 
-          console.log(errors);
           formRef.current?.setErrors(errors);
 
           return;
         }
 
         Alert.alert(
-          'Erro ao cadastrar',
-          'Ocorreu um erro no cadastro, tente novamente',
+          'Erro ao atualização do perfil',
+          'Ocorreu um erro na alteração de perfil, tente novamente',
         );
       }
     },
@@ -99,6 +118,9 @@ const Profile: React.FC = () => {
     navigation.goBack();
   }, [navigation]);
 
+  const handleSignOut = useCallback(() => {
+    signOut();
+  }, [signOut]);
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -107,13 +129,13 @@ const Profile: React.FC = () => {
     >
       <Container>
         <Header>
-          <ReturnButton onPress={handleGoBack}>
+          <GoBackButton onPress={handleGoBack}>
             <Icon name="arrow-left" size={24} color="#999591" />
-          </ReturnButton>
+          </GoBackButton>
           <HeaderTitle>Meu Perfil</HeaderTitle>
-          <LogoutButton>
+          <SignOutButton onPress={handleSignOut}>
             <Icon name="power" size={24} color="#999591" />
-          </LogoutButton>
+          </SignOutButton>
         </Header>
 
         <Content>
@@ -123,7 +145,12 @@ const Profile: React.FC = () => {
               <Icon name="camera" size={20} color="#312E38" />
             </ChangeAvatarButton>
           </ProfileContent>
-          <Form ref={formRef} onSubmit={handleSignUp} style={{ width: '100%' }}>
+          <Form
+            initialData={{ name: user.name, email: user.email }}
+            ref={formRef}
+            onSubmit={handleUpdateProfile}
+            style={{ width: '100%' }}
+          >
             <Input
               name="name"
               icon="user"

@@ -18,8 +18,8 @@ export const Header = styled.View`
   background: #28262e;
 `;
 
-export const ReturnButton = styled.TouchableOpacity``;
-export const LogoutButton = styled.TouchableOpacity``;
+export const GoBackButton = styled.TouchableOpacity``;
+export const SignOutButton = styled.TouchableOpacity``;
 
 export const HeaderTitle = styled.Text`
   font-size: 20px;
