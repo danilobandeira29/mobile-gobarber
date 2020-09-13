@@ -28,9 +28,9 @@ const AppointmentCreated: React.FC = () => {
     });
   }, [reset]);
 
-  const handleDateParams = useMemo(() => {
+  const formattedDate = useMemo(() => {
     const date = new Date(routeParams.date);
-    return format(date, "EEEE ', dia' d 'de' LLLL 'de' yyyy 'às' kk:mm", {
+    return format(date, "EEEE ', de' dd 'de' MMMM 'de' yyyy 'às' HH:mm 'h'", {
       locale: ptBR,
     });
   }, [routeParams.date]);
@@ -38,12 +38,8 @@ const AppointmentCreated: React.FC = () => {
   return (
     <Container>
       <Icon name="check" size={80} color="#04D361" />
-      <Title>
-        Agendamento
-        {'\n'}
-        concluído
-      </Title>
-      <Description>{handleDateParams}</Description>
+      <Title>Agendamento concluído</Title>
+      <Description>{formattedDate}</Description>
       <OkButton onPress={handleOkPressed}>
         <OkButtonText>OK</OkButtonText>
       </OkButton>
