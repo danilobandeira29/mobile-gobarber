@@ -104,7 +104,6 @@ const CreateAppointment: React.FC = () => {
         date,
       });
 
-      console.log(date.getTime());
       navigate('AppointmentCreated', { date: date.getTime() });
     } catch (err) {
       Alert.alert(
