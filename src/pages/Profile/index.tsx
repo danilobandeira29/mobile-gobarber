@@ -6,6 +6,7 @@ import {
   ScrollView,
   Platform,
 } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import * as Yup from 'yup';
@@ -121,6 +122,37 @@ const Profile: React.FC = () => {
   const handleSignOut = useCallback(() => {
     signOut();
   }, [signOut]);
+
+  const handleUpdateAvatar = useCallback(() => {
+    ImagePicker.showImagePicker(
+      {
+        title: 'Selecione uma foto',
+        cancelButtonTitle: 'Cancelar',
+        chooseFromLibraryButtonTitle: 'Selecionar da galeria',
+        takePhotoButtonTitle: 'Usar câmera',
+      },
+      response => {
+        if (response.error) {
+          Alert.alert('Erro ao atualizar avatar');
+          return;
+        }
+        if (response.didCancel) {
+          return;
+        }
+
+        const data = new FormData();
+
+        data.append('avatar', {
+          type: 'image/jpeg',
+          name: `${user.id}.jpg`,
+          uri: response.uri,
+        });
+
+        api.patch('/users/avatar', data).then(resp => updateUser(resp.data));
+      },
+    );
+  }, [user.id, updateUser]);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -141,7 +173,7 @@ const Profile: React.FC = () => {
         <Content>
           <ProfileContent>
             <UserAvatar source={{ uri: user.avatar_url }} />
-            <ChangeAvatarButton>
+            <ChangeAvatarButton onPress={handleUpdateAvatar}>
               <Icon name="camera" size={20} color="#312E38" />
             </ChangeAvatarButton>
           </ProfileContent>
